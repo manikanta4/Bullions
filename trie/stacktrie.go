@@ -17,6 +17,7 @@
 package trie
 
 import (
+	"errors"
 	"fmt"
 	"sync"
 
@@ -25,6 +26,8 @@ import (
 	"github.com/ethereum/go-ethereum/log"
 	"github.com/ethereum/go-ethereum/rlp"
 )
+
+var ErrCommitDisabled = errors.New("no database for committing")
 
 var stPool = sync.Pool{
 	New: func() interface{} {
@@ -110,7 +113,7 @@ func (st *StackTrie) Update(key, value []byte) {
 func (st *StackTrie) Reset() {
 	st.db = nil
 	st.key = st.key[:0]
-	st.val = st.val[:0]
+	st.val = nil
 	for i := range st.children {
 		st.children[i] = nil
 	}
@@ -311,19 +314,22 @@ func (st *StackTrie) hash() {
 			panic(err)
 		}
 	case extNode:
+		st.children[0].hash()
 		h = newHasher(false)
 		defer returnHasherToPool(h)
 		h.tmp.Reset()
-		st.children[0].hash()
-		// This is also possible:
-		//sz := hexToCompactInPlace(st.key)
-		//n := [][]byte{
-		//	st.key[:sz],
-		//	st.children[0].val,
-		//}
-		n := [][]byte{
-			hexToCompact(st.key),
-			st.children[0].val,
+		var valuenode node
+		if len(st.children[0].val) < 32 {
+			valuenode = rawNode(st.children[0].val)
+		} else {
+			valuenode = hashNode(st.children[0].val)
+		}
+		n := struct {
+			Key []byte
+			Val node
+		}{
+			Key: hexToCompact(st.key),
+			Val: valuenode,
 		}
 		if err := rlp.Encode(&h.tmp, n); err != nil {
 			panic(err)
@@ -391,14 +397,30 @@ func (st *StackTrie) Hash() (h common.Hash) {
 	return common.BytesToHash(st.val)
 }
 
-// Commit will commit the current node to database db
-func (st *StackTrie) Commit(db ethdb.KeyValueStore) common.Hash {
-	oldDb := st.db
-	st.db = db
-	defer func() {
-		st.db = oldDb
-	}()
+// Commit will firstly hash the entrie trie if it's still not hashed
+// and then commit all nodes to the associated database. Actually most
+// of the trie nodes MAY have been committed already. The main purpose
+// here is to commit the root node.
+//
+// The associated database is expected, otherwise the whole commit
+// functionality should be disabled.
+func (st *StackTrie) Commit() (common.Hash, error) {
+	if st.db == nil {
+		return common.Hash{}, ErrCommitDisabled
+	}
 	st.hash()
-	h := common.BytesToHash(st.val)
-	return h
+	if len(st.val) != 32 {
+		// If the node's RLP isn't 32 bytes long, the node will not
+		// be hashed (and committed), and instead contain the  rlp-encoding of the
+		// node. For the top level node, we need to force the hashing+commit.
+		ret := make([]byte, 32)
+		h := newHasher(false)
+		defer returnHasherToPool(h)
+		h.sha.Reset()
+		h.sha.Write(st.val)
+		h.sha.Read(ret)
+		st.db.Put(ret, st.val)
+		return common.BytesToHash(ret), nil
+	}
+	return common.BytesToHash(st.val), nil
 }

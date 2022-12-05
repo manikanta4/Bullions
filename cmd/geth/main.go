@@ -38,13 +38,11 @@ import (
 	"github.com/ethereum/go-ethereum/internal/debug"
 	"github.com/ethereum/go-ethereum/internal/ethapi"
 	"github.com/ethereum/go-ethereum/internal/flags"
-	"github.com/ethereum/go-ethereum/internal/openrpc"
 	"github.com/ethereum/go-ethereum/log"
 	"github.com/ethereum/go-ethereum/metrics"
 	"github.com/ethereum/go-ethereum/node"
-	"github.com/ethereum/go-ethereum/rpc"
 	gopsutil "github.com/shirou/gopsutil/mem"
-	cli "gopkg.in/urfave/cli.v1"
+	"gopkg.in/urfave/cli.v1"
 )
 
 const (
@@ -117,6 +115,7 @@ var (
 		utils.CacheGCFlag,
 		utils.CacheSnapshotFlag,
 		utils.CacheNoPrefetchFlag,
+		utils.CachePreimagesFlag,
 		utils.ListenPortFlag,
 		utils.MaxPeersFlag,
 		utils.MaxPendingPeersFlag,
@@ -142,8 +141,10 @@ var (
 		utils.NodeKeyFileFlag,
 		utils.NodeKeyHexFlag,
 		utils.DNSDiscoveryFlag,
+		utils.EthProtocolsFlag,
 		utils.DeveloperFlag,
 		utils.DeveloperPeriodFlag,
+		utils.DeveloperPoWFlag,
 		utils.ClassicFlag,
 		utils.MordorFlag,
 		utils.SocialFlag,
@@ -154,11 +155,12 @@ var (
 		utils.RinkebyFlag,
 		utils.KottiFlag,
 		utils.GoerliFlag,
-		utils.YoloV1Flag,
+		utils.YoloV2Flag,
 		utils.VMEnableDebugFlag,
 		utils.NetworkIdFlag,
 		utils.EthStatsURLFlag,
 		utils.FakePoWFlag,
+		utils.FakePoWPoissonFlag,
 		utils.NoCompactionFlag,
 		utils.GpoBlocksFlag,
 		utils.LegacyGpoBlocksFlag,
@@ -168,6 +170,7 @@ var (
 		utils.EWASMInterpreterFlag,
 		utils.EVMInterpreterFlag,
 		utils.ECBP1100Flag,
+		utils.ECBP1100NoDisableFlag,
 		configFileFlag,
 	}
 
@@ -199,8 +202,8 @@ var (
 		utils.IPCDisabledFlag,
 		utils.IPCPathFlag,
 		utils.InsecureUnlockAllowedFlag,
-		utils.RPCGlobalGasCap,
-		utils.RPCGlobalTxFeeCap,
+		utils.RPCGlobalGasCapFlag,
+		utils.RPCGlobalTxFeeCapFlag,
 	}
 
 	whisperFlags = []cli.Flag{
@@ -252,11 +255,10 @@ func init() {
 		makecacheCommand,
 		makedagCommand,
 		versionCommand,
+		versionCheckCommand,
 		licenseCommand,
 		// See config.go
 		dumpConfigCommand,
-		// See retesteth.go
-		retestethCommand,
 		// See cmd/utils/flags_legacy.go
 		utils.ShowDeprecated,
 	}
@@ -277,10 +279,6 @@ func init() {
 		debug.Exit()
 		prompt.Stdin.Close() // Resets terminal mode.
 		return nil
-	}
-
-	if err := rpc.SetDefaultOpenRPCSchemaRaw(openrpc.OpenRPCSchema); err != nil {
-		log.Crit("Setting OpenRPC default", "error", err)
 	}
 }
 
@@ -310,7 +308,10 @@ func checkMainnet(ctx *cli.Context) bool {
 		log.Info("Starting Geth on Görli testnet...")
 
 	case ctx.GlobalIsSet(utils.DeveloperFlag.Name):
-		log.Info("Starting Geth in ephemeral dev mode...")
+		log.Info("Starting Geth in ephemeral proof-of-authority network dev mode...")
+
+	case ctx.GlobalIsSet(utils.DeveloperPoWFlag.Name):
+		log.Info("Starting Geth in ephemeral proof-of-work network dev mode...")
 
 	case ctx.GlobalIsSet(utils.ClassicFlag.Name):
 		log.Info("Starting Geth on Ethereum Classic...")
@@ -321,8 +322,8 @@ func checkMainnet(ctx *cli.Context) bool {
 	case ctx.GlobalIsSet(utils.KottiFlag.Name):
 		log.Info("Starting Geth on Kotti testnet...")
 
-	case ctx.GlobalIsSet(utils.YoloV1Flag.Name):
-		log.Info("Starting Geth on YoloV1 testnet...")
+	case ctx.GlobalIsSet(utils.YoloV2Flag.Name):
+		log.Info("Starting Geth on YoloV2 testnet...")
 
 	case ctx.GlobalIsSet(utils.SocialFlag.Name):
 		log.Info("Starting Geth on Social network...")
@@ -487,7 +488,8 @@ func startNode(ctx *cli.Context, stack *node.Node, backend ethapi.Backend) {
 	}
 
 	// Start auxiliary services if enabled
-	if ctx.GlobalBool(utils.MiningEnabledFlag.Name) || ctx.GlobalBool(utils.DeveloperFlag.Name) {
+	isDeveloperMode := ctx.GlobalBool(utils.DeveloperFlag.Name) || ctx.GlobalBool(utils.DeveloperPoWFlag.Name)
+	if ctx.GlobalBool(utils.MiningEnabledFlag.Name) || isDeveloperMode {
 		// Mining only makes sense if a full Ethereum node is running
 		if ctx.GlobalString(utils.SyncModeFlag.Name) == "light" {
 			utils.Fatalf("Light clients do not support mining")
@@ -508,6 +510,9 @@ func startNode(ctx *cli.Context, stack *node.Node, backend ethapi.Backend) {
 		if ctx.GlobalIsSet(utils.LegacyMinerThreadsFlag.Name) && !ctx.GlobalIsSet(utils.MinerThreadsFlag.Name) {
 			threads = ctx.GlobalInt(utils.LegacyMinerThreadsFlag.Name)
 			log.Warn("The flag --minerthreads is deprecated and will be removed in the future, please use --miner.threads")
+		}
+		if isDeveloperMode && !ctx.GlobalIsSet(utils.MinerThreadsFlag.Name) && !ctx.GlobalIsSet(utils.LegacyMinerThreadsFlag.Name) {
+			threads = 1
 		}
 		if err := ethBackend.StartMining(threads); err != nil {
 			utils.Fatalf("Failed to start mining: %v", err)

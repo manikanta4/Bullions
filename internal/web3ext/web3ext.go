@@ -31,6 +31,7 @@ var Modules = map[string]string{
 	"rpc":        RpcJs,
 	"shh":        ShhJs,
 	"swarmfs":    SwarmfsJs,
+	"trace":      TraceJs,
 	"txpool":     TxpoolJs,
 	"les":        LESJs,
 	"lespay":     LESPayJs,
@@ -182,6 +183,11 @@ web3._extend({
 			params: 1
 		}),
 		new web3._extend.Method({
+			name: 'maxPeers',
+			call: 'admin_maxPeers',
+			params: 1
+		}),
+		new web3._extend.Method({
 			name: 'ecbp1100',
 			call: 'admin_ecbp1100',
 			params: 1
@@ -242,7 +248,8 @@ web3._extend({
 		new web3._extend.Method({
 			name: 'printBlock',
 			call: 'debug_printBlock',
-			params: 1
+			params: 1,
+			outputFormatter: console.log
 		}),
 		new web3._extend.Method({
 			name: 'getBlockRlp',
@@ -253,7 +260,7 @@ web3._extend({
 			name: 'testSignCliqueBlock',
 			call: 'debug_testSignCliqueBlock',
 			params: 2,
-			inputFormatters: [web3._extend.formatters.inputAddressFormatter, null],
+			inputFormatter: [web3._extend.formatters.inputAddressFormatter, null],
 		}),
 		new web3._extend.Method({
 			name: 'setHead',
@@ -268,7 +275,8 @@ web3._extend({
 		new web3._extend.Method({
 			name: 'dumpBlock',
 			call: 'debug_dumpBlock',
-			params: 1
+			params: 1,
+			inputFormatter: [web3._extend.formatters.inputBlockNumberFormatter]
 		}),
 		new web3._extend.Method({
 			name: 'chaindbProperty',
@@ -420,7 +428,7 @@ web3._extend({
 			name: 'traceBlockByNumber',
 			call: 'debug_traceBlockByNumber',
 			params: 2,
-			inputFormatter: [null, null]
+			inputFormatter: [web3._extend.formatters.inputBlockNumberFormatter, null]
 		}),
 		new web3._extend.Method({
 			name: 'traceBlockByHash',
@@ -472,6 +480,11 @@ web3._extend({
 			name: 'freezeClient',
 			call: 'debug_freezeClient',
 			params: 1,
+		}),
+		new web3._extend.Method({
+			name: 'removePendingTransaction',
+			call: 'debug_removePendingTransaction',
+			params: 1
 		}),
 	],
 	properties: []
@@ -527,7 +540,8 @@ web3._extend({
 		new web3._extend.Method({
 			name: 'getHeaderByNumber',
 			call: 'eth_getHeaderByNumber',
-			params: 1
+			params: 1,
+			inputFormatter: [web3._extend.formatters.inputBlockNumberFormatter]
 		}),
 		new web3._extend.Method({
 			name: 'getHeaderByHash',
@@ -760,16 +774,37 @@ web3._extend({
 });
 `
 
+const TraceJs = `
+web3._extend({
+	property: 'trace',
+	methods: [
+		new web3._extend.Method({
+			name: 'block',
+			call: 'trace_block',
+			params: 2,
+			inputFormatter: [null, null]
+		}),
+		new web3._extend.Method({
+			name: 'transaction',
+			call: 'trace_transaction',
+			params: 2,
+			inputFormatter: [null, null]
+		}),
+		new web3._extend.Method({
+			name: 'filter',
+			call: 'trace_filter',
+			params: 2,
+			inputFormatter: [null, null]
+		}),
+	],
+	properties: []
+});
+`
+
 const TxpoolJs = `
 web3._extend({
 	property: 'txpool',
-	methods: [
-		new web3._extend.Method({
-			name: 'removeTransaction',
-			call: 'txpool_removeTransaction',
-			params: 1
-		}),
-	],
+	methods: [],
 	properties:
 	[
 		new web3._extend.Property({

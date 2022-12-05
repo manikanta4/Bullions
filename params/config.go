@@ -30,7 +30,8 @@ var (
 	RopstenGenesisHash = common.HexToHash("0x41941023680923e0fe4d74a34bdac8141f2540e3ae90623718e47d66d1ca4a2d")
 	RinkebyGenesisHash = common.HexToHash("0x6341fd3daf94b748c72ced5a5b26028f2474f5f00d824504e4fa37a75767e177")
 	GoerliGenesisHash  = common.HexToHash("0xbf7e331f7f7c1dd2e05159666b3bf8bc7a8a3a9eb1d518969eab529dd9b88c1a")
-	YoloV1GenesisHash  = common.HexToHash("0xc3fd235071f24f93865b0850bd2a2119b30f7224d18a0e34c7bbf549ad7e3d36")
+	// TODO: update with yolov2 values
+	YoloV2GenesisHash = common.HexToHash("0xc3fd235071f24f93865b0850bd2a2119b30f7224d18a0e34c7bbf549ad7e3d36")
 )
 
 // TrustedCheckpoints associates each known checkpoint with the genesis hash of
@@ -74,10 +75,10 @@ var (
 
 	// MainnetTrustedCheckpoint contains the light client trusted checkpoint for the main network.
 	MainnetTrustedCheckpoint = &ctypes.TrustedCheckpoint{
-		SectionIndex: 333,
-		SectionHead:  common.HexToHash("0xb80784cbe88077e5911b446765edc814dd67ca3f6bdd33b6ec72d66058df4a11"),
-		CHTRoot:      common.HexToHash("0x4da9cde840dd3de39916620f7a97674c5747a89a9359e6b918e134d199a8dd45"),
-		BloomRoot:    common.HexToHash("0xdd0f4fef7fa2a5cc05d49568e38f15dab24098ffc7677a2e35d1a8d67f5458af"),
+		SectionIndex: 345,
+		SectionHead:  common.HexToHash("0x5453bab878704adebc934b41fd214a07ea7a72b8572ff088dca7f7956cd0ef28"),
+		CHTRoot:      common.HexToHash("0x7693d432595846c094f47cb37f5c868b0b7b1968fc6b0fc411ded1345fdaffab"),
+		BloomRoot:    common.HexToHash("0x8b0e7895bc39840d8dac857e26bdf3d0a07684b0b962b252546659e0337a9f70"),
 	}
 
 	// MainnetCheckpointOracle contains a set of configs for the main network oracle.
@@ -113,10 +114,10 @@ var (
 
 	// RopstenTrustedCheckpoint contains the light client trusted checkpoint for the Ropsten test network.
 	RopstenTrustedCheckpoint = &ctypes.TrustedCheckpoint{
-		SectionIndex: 262,
-		SectionHead:  common.HexToHash("0x12b068f285789b966a983b632266484f1bc93803df6c78773538a5777f57a236"),
-		CHTRoot:      common.HexToHash("0x14000a1407e866f174f3a20fe9f271acd704bcf929b5205d83b70a1bba8c82c2"),
-		BloomRoot:    common.HexToHash("0x2f4f4a34a55e35d0691c79a79e39b6f661259345080fb880da5195c11c2413be"),
+		SectionIndex: 279,
+		SectionHead:  common.HexToHash("0x4a4912848d4c06090097073357c10015d11c6f4544a0f93cbdd584701c3b7d58"),
+		CHTRoot:      common.HexToHash("0x9053b7867ae921e80a4e2f5a4b15212e4af3d691ca712fb33dc150e9c6ea221c"),
+		BloomRoot:    common.HexToHash("0x3dc04cb1be7ddc271f3f83469b47b76184a79d7209ef51d85b1539ea6d25a645"),
 	}
 
 	// RopstenCheckpointOracle contains a set of configs for the Ropsten test network oracle.
@@ -157,10 +158,10 @@ var (
 
 	// RinkebyTrustedCheckpoint contains the light client trusted checkpoint for the Rinkeby test network.
 	RinkebyTrustedCheckpoint = &ctypes.TrustedCheckpoint{
-		SectionIndex: 220,
-		SectionHead:  common.HexToHash("0x9513befa126a83c96a6408ee8b34502699094a49b2bf1064b2de31b010a03798"),
-		CHTRoot:      common.HexToHash("0x490a17d3bfbfc9bca9de087c5ee9c9f69dc2359cad9c1fe68cab639fdbcfccee"),
-		BloomRoot:    common.HexToHash("0x56bf5fda940ca4ca8346e42ef86f9092c82268c304c03c4093b21c1aa07190fc"),
+		SectionIndex: 232,
+		SectionHead:  common.HexToHash("0x8170fca4039b11a008c11f9996ff112151cbb17411437bb2f86288e11158b2f0"),
+		CHTRoot:      common.HexToHash("0x4526560d92ae1b3a6d3ee780c3ad289ba2bbf1b5da58d9ea107f2f26412b631f"),
+		BloomRoot:    common.HexToHash("0x82a889098a35d6a21ea8894d35a1db69b94bad61b988bbe5ae4601437320e331"),
 	}
 
 	// RinkebyCheckpointOracle contains a set of configs for the Rinkeby test network oracle.
@@ -199,10 +200,10 @@ var (
 
 	// GoerliTrustedCheckpoint contains the light client trusted checkpoint for the Görli test network.
 	GoerliTrustedCheckpoint = &ctypes.TrustedCheckpoint{
-		SectionIndex: 105,
-		SectionHead:  common.HexToHash("0x695f5b67d1985fb13d177c56d20ded0622d7f63a1623959fb4b5c5e38dc6bbee"),
-		CHTRoot:      common.HexToHash("0x4c281ef1ca63e6f9bb4ce8e46e80e478787c91da95c3727550ee418886dd6415"),
-		BloomRoot:    common.HexToHash("0xa02463cc6ee54f12990e9adb019e34696ad1efe2694cf07187d7ce0802cd653d"),
+		SectionIndex: 116,
+		SectionHead:  common.HexToHash("0xf2d200f636f213c9c7bb4e747ff564813da7708253037103aef3d8be5203c5e1"),
+		CHTRoot:      common.HexToHash("0xb0ac83e2ccf6c2776945e099c4e3df50fe6200499c8b2045c34cafdf57d15087"),
+		BloomRoot:    common.HexToHash("0xfb580ad1c611230a4bfc56534f58bcb156d028bc6ce70e35403dc019c7c02d90"),
 	}
 
 	// GoerliCheckpointOracle contains a set of configs for the Goerli test network oracle.
@@ -218,9 +219,9 @@ var (
 		Threshold: 2,
 	}
 
-	// YoloV1ChainConfig contains the chain parameters to run a node on the YOLOv1 test network.
-	YoloV1ChainConfig = &goethereum.ChainConfig{
-		ChainID:             big.NewInt(133519467574833),
+	// YoloV2ChainConfig contains the chain parameters to run a node on the YOLOv2 test network.
+	YoloV2ChainConfig = &goethereum.ChainConfig{
+		ChainID:             big.NewInt(133519467574834),
 		HomesteadBlock:      big.NewInt(0),
 		DAOForkBlock:        nil,
 		DAOForkSupport:      true,
@@ -232,7 +233,7 @@ var (
 		PetersburgBlock:     big.NewInt(0),
 		IstanbulBlock:       big.NewInt(0),
 		MuirGlacierBlock:    nil,
-		YoloV1Block:         big.NewInt(0),
+		YoloV2Block:         big.NewInt(0),
 		Clique: &ctypes.CliqueConfig{
 			Period: 15,
 			Epoch:  30000,
@@ -258,7 +259,7 @@ var (
 		PetersburgBlock:         big.NewInt(0),
 		IstanbulBlock:           big.NewInt(0),
 		MuirGlacierBlock:        nil,
-		YoloV1Block:             nil,
+		YoloV2Block:             nil,
 		EWASMBlock:              nil,
 		Ethash:                  new(ctypes.EthashConfig),
 		Clique:                  nil,
@@ -267,62 +268,62 @@ var (
 	}
 
 	/*
-		https://github.com/ethereum/go-ethereum/blob/master/params/config.go#L242
+			https://github.com/ethereum/go-ethereum/blob/master/params/config.go#L242
 
-			AllEthashProtocolChanges = &ChainConfig{
-			big.NewInt(1337),
-			big.NewInt(0),
-			nil,
-			false,
-			big.NewInt(0),
-			common.Hash{},
-			big.NewInt(0),
-			big.NewInt(0),
-			big.NewInt(0),
-			big.NewInt(0),
-			big.NewInt(0),
-			big.NewInt(0),
-			nil,
-			nil,
-			nil,
-			new(EthashConfig),
-			nil
+				AllEthashProtocolChanges = &ChainConfig{
+				big.NewInt(1337),
+				big.NewInt(0),
+				nil,
+				false,
+				big.NewInt(0),
+				common.Hash{},
+				big.NewInt(0),
+				big.NewInt(0),
+				big.NewInt(0),
+				big.NewInt(0),
+				big.NewInt(0),
+				big.NewInt(0),
+				nil,
+				nil,
+				nil,
+				new(EthashConfig),
+				nil
+				}
+
+
+			// ChainConfig is the core config which determines the blockchain settings.
+			//
+			// ChainConfig is stored in the database on a per block basis. This means
+			// that any network, identified by its genesis block, can have its own
+			// set of configuration options.
+			type ChainConfig struct {
+				ChainID *big.Int `json:"chainId"` // chainId identifies the current chain and is used for replay protection
+
+				HomesteadBlock *big.Int `json:"homesteadBlock,omitempty"` // Homestead switch block (nil = no fork, 0 = already homestead)
+
+				DAOForkBlock   *big.Int `json:"daoForkBlock,omitempty"`   // TheDAO hard-fork switch block (nil = no fork)
+				DAOForkSupport bool     `json:"daoForkSupport,omitempty"` // Whether the nodes supports or opposes the DAO hard-fork
+
+				// EIP150 implements the Gas price changes (https://github.com/ethereum/EIPs/issues/150)
+				EIP150Block *big.Int    `json:"eip150Block,omitempty"` // EIP150 HF block (nil = no fork)
+				EIP150Hash  common.Hash `json:"eip150Hash,omitempty"`  // EIP150 HF hash (needed for header only clients as only gas pricing changed)
+
+				EIP155Block *big.Int `json:"eip155Block,omitempty"` // EIP155 HF block
+				EIP158Block *big.Int `json:"eip158Block,omitempty"` // EIP158 HF block
+
+				ByzantiumBlock      *big.Int `json:"byzantiumBlock,omitempty"`      // Byzantium switch block (nil = no fork, 0 = already on byzantium)
+				ConstantinopleBlock *big.Int `json:"constantinopleBlock,omitempty"` // Constantinople switch block (nil = no fork, 0 = already activated)
+				PetersburgBlock     *big.Int `json:"petersburgBlock,omitempty"`     // Petersburg switch block (nil = same as Constantinople)
+				IstanbulBlock       *big.Int `json:"istanbulBlock,omitempty"`       // Istanbul switch block (nil = no fork, 0 = already on istanbul)
+				MuirGlacierBlock    *big.Int `json:"muirGlacierBlock,omitempty"`    // Eip-2384 (bomb delay) switch block (nil = no fork, 0 = already activated)
+
+		YoloV2Block *big.Int `json:"yoloV2Block,omitempty"` // YOLO v1: https://github.com/ethereum/EIPs/pull/2657 (Ephemeral testnet)
+				EWASMBlock  *big.Int `json:"ewasmBlock,omitempty"`  // EWASM switch block (nil = no fork, 0 = already activated)
+
+				// Various consensus engines
+				Ethash *EthashConfig `json:"ethash,omitempty"`
+				Clique *CliqueConfig `json:"clique,omitempty"`
 			}
-
-
-		// ChainConfig is the core config which determines the blockchain settings.
-		//
-		// ChainConfig is stored in the database on a per block basis. This means
-		// that any network, identified by its genesis block, can have its own
-		// set of configuration options.
-		type ChainConfig struct {
-			ChainID *big.Int `json:"chainId"` // chainId identifies the current chain and is used for replay protection
-
-			HomesteadBlock *big.Int `json:"homesteadBlock,omitempty"` // Homestead switch block (nil = no fork, 0 = already homestead)
-
-			DAOForkBlock   *big.Int `json:"daoForkBlock,omitempty"`   // TheDAO hard-fork switch block (nil = no fork)
-			DAOForkSupport bool     `json:"daoForkSupport,omitempty"` // Whether the nodes supports or opposes the DAO hard-fork
-
-			// EIP150 implements the Gas price changes (https://github.com/ethereum/EIPs/issues/150)
-			EIP150Block *big.Int    `json:"eip150Block,omitempty"` // EIP150 HF block (nil = no fork)
-			EIP150Hash  common.Hash `json:"eip150Hash,omitempty"`  // EIP150 HF hash (needed for header only clients as only gas pricing changed)
-
-			EIP155Block *big.Int `json:"eip155Block,omitempty"` // EIP155 HF block
-			EIP158Block *big.Int `json:"eip158Block,omitempty"` // EIP158 HF block
-
-			ByzantiumBlock      *big.Int `json:"byzantiumBlock,omitempty"`      // Byzantium switch block (nil = no fork, 0 = already on byzantium)
-			ConstantinopleBlock *big.Int `json:"constantinopleBlock,omitempty"` // Constantinople switch block (nil = no fork, 0 = already activated)
-			PetersburgBlock     *big.Int `json:"petersburgBlock,omitempty"`     // Petersburg switch block (nil = same as Constantinople)
-			IstanbulBlock       *big.Int `json:"istanbulBlock,omitempty"`       // Istanbul switch block (nil = no fork, 0 = already on istanbul)
-			MuirGlacierBlock    *big.Int `json:"muirGlacierBlock,omitempty"`    // Eip-2384 (bomb delay) switch block (nil = no fork, 0 = already activated)
-
-			YoloV1Block *big.Int `json:"yoloV1Block,omitempty"` // YOLO v1: https://github.com/ethereum/EIPs/pull/2657 (Ephemeral testnet)
-			EWASMBlock  *big.Int `json:"ewasmBlock,omitempty"`  // EWASM switch block (nil = no fork, 0 = already activated)
-
-			// Various consensus engines
-			Ethash *EthashConfig `json:"ethash,omitempty"`
-			Clique *CliqueConfig `json:"clique,omitempty"`
-		}
 	*/
 
 	// AllCliqueProtocolChanges contains every protocol change (EIPs) introduced
